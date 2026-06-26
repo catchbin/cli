@@ -1,6 +1,6 @@
 # catchbin CLI
 
-> Forward and replay webhooks from your own machine — the localhost-touching half of [catchbin](https://catchbin.io), a webhook inspector with persistence.
+> Forward webhooks to your own machine — the localhost-touching half of [catchbin](https://catchbin.io), a webhook inspector with persistence.
 
 [**catchbin.io**](https://catchbin.io) · [Releases](https://github.com/catchbin/cli/releases)
 
@@ -10,28 +10,25 @@ This repository hosts the **prebuilt binary releases** of the `catchbin` command
 
 ## What it does
 
-catchbin gives you a permanent webhook URL in the cloud that captures every event, so your provider (Stripe, GitHub, …) always gets a fast response — even when your laptop is closed. The CLI is the piece that runs on your machine.
-
-### Forward webhooks to your local server
+catchbin gives you a permanent webhook URL in the cloud that captures every event, so your provider (Stripe, GitHub, …) always gets a fast response — even when your laptop is closed. The CLI is the piece that runs on your machine: it forwards those captured webhooks to your local server in real time.
 
 ```sh
-catchbin forward <endpoint-id> localhost:3000
+# 1. authenticate once (stores your workspace API key)
+catchbin configure
+
+# 2. forward captured events to your local server
+catchbin forward <workspace-id>/<slug> localhost:3000
 ```
 
-Point your provider at your permanent catchbin URL once. While the CLI is connected, every captured event is forwarded to your local server and the response code and latency are shown in your terminal. Events captured while you're offline are queued and delivered in order the next time you connect. Any URL works, not just localhost:
+Point your provider at your permanent catchbin URL once. While the CLI is connected, every captured event is forwarded to your local server and the response code and latency are shown in your terminal. Events captured while you're offline are queued and delivered in order the next time you connect.
+
+Any target URL works, not just localhost:
 
 ```sh
-catchbin forward <endpoint-id> https://staging.example.com
+catchbin forward abc123/my-endpoint https://staging.example.com
 ```
 
-### Replay a captured event
-
-```sh
-catchbin replay <event-id> --target localhost:3000 [--strip | --resign]
-```
-
-- `--strip` (default) removes the provider's signature headers and replays the body byte-for-byte.
-- `--resign` computes a fresh signature locally from a secret you're prompted for — it never appears in your shell history or a process listing. For CI, `--secret-from-stdin` reads it from stdin.
+The API key can also come from the `CATCHBIN_API_KEY` environment variable instead of `catchbin configure`.
 
 ---
 
@@ -69,7 +66,7 @@ curl -fsSL https://catchbin.io/install.sh | sh   # coming soon
 
 ## About
 
-A single Go binary with no runtime dependencies — a WebSocket client, an HTTP forwarder, and terminal output. Signature verification and all webhook intelligence happen in the catchbin cloud; the only secret the CLI ever handles is the optional replay re-sign secret, entered at an interactive prompt and never written anywhere.
+A single Go binary with no runtime dependencies — a WebSocket client, an HTTP forwarder, and terminal output. Signature verification and all webhook intelligence happen in the catchbin cloud.
 
 Learn more at [catchbin.io](https://catchbin.io).
 
