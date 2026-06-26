@@ -1,0 +1,2 @@
+# cli
+catchbin CLI releases
