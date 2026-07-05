@@ -32,33 +32,45 @@ The API key can also come from the `CATCHBIN_API_KEY` environment variable inste
 
 ---
 
-## Install
+## Installation
 
-Prebuilt binaries for **macOS, Linux, and Windows** (amd64 and arm64) are published on the [Releases](https://github.com/catchbin/cli/releases) page.
-
-### Manual download
-
-1. Download the archive for your platform from the [latest release](https://github.com/catchbin/cli/releases/latest) (e.g. `catchbin_<version>_linux_amd64.tar.gz`).
-2. Extract it and move the `catchbin` binary onto your `PATH`:
+### Homebrew (macOS)
 
 ```sh
-tar xzf catchbin_*_linux_amd64.tar.gz
-install -m 0755 catchbin /usr/local/bin/catchbin   # or any directory on your PATH
-catchbin --help
+brew install catchbin/tap/catchbin
 ```
 
-Each release ships a `checksums.txt` so you can verify your download:
+macOS only — the tap ships a cask, not a Linux formula. On Linux, use the `curl | sh` installer or a direct download below.
+
+### curl | sh (macOS and Linux)
 
 ```sh
-sha256sum -c checksums.txt --ignore-missing
+curl -fsSL https://catchbin.io/install.sh | sh
 ```
 
-### Homebrew and `curl | sh` — planned
+Detects your OS and architecture, verifies the download against the release checksums, and installs `catchbin` to `/usr/local/bin` — falling back to `~/.local/bin` (with a PATH hint) when that is not writable. It never uses sudo.
+
+### Direct download
+
+Prebuilt archives for macOS, Linux, and Windows are on the [releases page](https://github.com/catchbin/cli/releases). Windows: download the `.zip`, extract `catchbin.exe`, and put it on your `PATH`.
+
+## Verifying a release
+
+Each release's checksum manifest (`checksums.txt`) is signed with [cosign](https://docs.sigstore.dev/cosign/system_config/installation/) keyless signing; verification needs only public inputs. For release `vX.Y.Z` (replace with the tag you downloaded):
 
 ```sh
-brew install catchbin/tap/catchbin               # coming soon
-curl -fsSL https://catchbin.io/install.sh | sh   # coming soon
+# 1. Verify the checksum manifest was signed by catchbin's release workflow
+cosign verify-blob checksums.txt \
+  --signature checksums.txt.sig \
+  --certificate checksums.txt.pem \
+  --certificate-identity "https://github.com/catchbin/catchbin-cli/.github/workflows/release.yml@refs/tags/vX.Y.Z" \
+  --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
+
+# 2. Verify your downloaded archive against the verified manifest
+sha256sum --check --ignore-missing checksums.txt   # macOS: shasum -a 256 -c --ignore-missing checksums.txt
 ```
+
+Step 1 prints `Verified OK`; step 2 reports `OK` for your archive. The tag in `--certificate-identity` must match the release you are verifying. Verification fails if the manifest or an archive was tampered with, or if the signing identity or issuer differs.
 
 > The CLI checks for newer releases and lets you know when one is available. It is **informational only** — catchbin never auto-updates itself.
 
