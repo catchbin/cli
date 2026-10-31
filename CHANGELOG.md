@@ -12,6 +12,10 @@ tracks the public API major (`/v1` ↔ `1.x`).
 
 Releases before `0.1.4` predate this file and are not recorded here.
 
+## [0.1.5] — 2026-10-31
+
+No user-facing changes.
+
 ## [0.1.4] — 2026-09-03
 
 No user-facing changes.
