@@ -1,8 +1,10 @@
 # catchbin CLI
 
-> Forward webhooks to your own machine — the localhost-touching half of [catchbin](https://catchbin.io), a webhook inspector with persistence.
+> **catchbin is discontinued.** The project stopped on 2026-10-31 without launching. This repository is archived and kept for reference only. It is not maintained, and the `catchbin.io` service does not exist.
 
-[**catchbin.io**](https://catchbin.io) · [Releases](https://github.com/catchbin/cli/releases)
+> Forward webhooks to your own machine — the localhost-touching half of catchbin, a webhook inspector with persistence.
+
+[Releases](https://github.com/catchbin/cli/releases)
 
 This repository hosts the **prebuilt binary releases** of the `catchbin` command-line tool. Grab a build for your platform from the [Releases](https://github.com/catchbin/cli/releases) page.
 
@@ -34,21 +36,7 @@ The API key can also come from the `CATCHBIN_API_KEY` environment variable inste
 
 ## Installation
 
-### Homebrew (macOS)
-
-```sh
-brew install catchbin/tap/catchbin
-```
-
-macOS only — the tap ships a cask, not a Linux formula. On Linux, use the `curl | sh` installer or a direct download below.
-
-### curl | sh (macOS and Linux)
-
-```sh
-curl -fsSL https://catchbin.io/install.sh | sh
-```
-
-Detects your OS and architecture, verifies the download against the release checksums, and installs `catchbin` to `/usr/local/bin` — falling back to `~/.local/bin` (with a PATH hint) when that is not writable. It never uses sudo.
+The Homebrew tap and the `curl | sh` installer are retired. The archives from the final release remain on the releases page.
 
 ### Direct download
 
@@ -79,8 +67,6 @@ Step 1 prints `Verified OK`; step 2 reports `OK` for your archive. The tag in `-
 ## About
 
 A single Go binary with no runtime dependencies — a WebSocket client, an HTTP forwarder, and terminal output. Signature verification and all webhook intelligence happen in the catchbin cloud.
-
-Learn more at [catchbin.io](https://catchbin.io).
 
 ## License
 
